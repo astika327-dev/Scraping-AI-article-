@@ -19,10 +19,23 @@ export default function NewsFeed() {
     async function fetchNews() {
       try {
         const response = await fetch('/api/ingest/news-api-worker');
+        const contentType = response.headers.get("content-type");
+
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch news');
+          let errorMessage = `Failed to fetch news: ${response.statusText}`;
+          if (contentType && contentType.indexOf("application/json") !== -1) {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorMessage;
+          } else {
+            errorMessage = "The server returned an unexpected error.";
+          }
+          throw new Error(errorMessage);
         }
+
+        if (!contentType || contentType.indexOf("application/json") === -1) {
+          throw new Error("Received an invalid response from the server.");
+        }
+
         const data = await response.json();
         setArticle(data);
       } catch (err) {
