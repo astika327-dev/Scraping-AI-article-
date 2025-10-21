@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #c8a486; /* Mocca */
+  --foreground: #4a2c2a; /* Dark Brown */
 }
 
 @theme inline {
