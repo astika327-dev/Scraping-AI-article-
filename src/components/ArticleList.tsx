@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import ArticleCard from './ArticleCard';
+import SkeletonCard from './SkeletonCard';
 
 interface Article {
   title: string;
@@ -23,6 +24,9 @@ const ArticleList = () => {
           throw new Error('Failed to fetch articles.');
         }
         const data = await response.json();
+        if (data.error) {
+          throw new Error(data.error);
+        }
         setArticles(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -33,13 +37,22 @@ const ArticleList = () => {
     fetchArticles();
   }, []);
 
-  if (loading) return <div>Loading articles...</div>;
-  if (error) return <div className="text-red-500">Error: {error}</div>;
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <SkeletonCard key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) return <div className="text-center py-10 text-red-400">Error: Could not fetch articles. Please check your NEWS_API_KEY.</div>;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {articles.map((article, index) => (
-        <ArticleCard key={index} article={article} />
+        <ArticleCard key={index} article={article} index={index} />
       ))}
     </div>
   );
