@@ -7,25 +7,35 @@ interface Article {
   url: string;
 }
 
-const ArticleCard = ({ article }: { article: Article }) => {
+const ArticleCard = ({ article, index }: { article: Article; index: number }) => {
   return (
-    <div className="border rounded-lg overflow-hidden shadow-lg">
+    <a
+      href={article.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block rounded-lg overflow-hidden group transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl animate-fade-in"
+      style={{
+        background: 'linear-gradient(to bottom, rgb(var(--tile-start-rgb)), rgb(var(--tile-end-rgb)))',
+        borderColor: 'rgb(var(--tile-border))',
+        borderWidth: '1px',
+        animationDelay: `${index * 100}ms`,
+        opacity: 0, // Start with opacity 0, animation will make it visible
+      }}
+    >
       <div className="relative w-full h-48">
         <Image
           src={article.urlToImage || '/placeholder.svg'}
           alt={article.title}
           fill
           style={{ objectFit: 'cover' }}
+          className="transition-transform duration-300 group-hover:scale-105"
         />
       </div>
-      <div className="p-4">
-        <h3 className="font-bold text-lg mb-2">{article.title}</h3>
-        <p className="text-sm mb-4">{article.description}</p>
-        <a href={article.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-          Read More
-        </a>
+      <div className="p-5">
+        <h3 className="font-bold text-lg text-white mb-2 leading-tight">{article.title}</h3>
+        <p className="text-gray-400 text-sm">{article.description}</p>
       </div>
-    </div>
+    </a>
   );
 };
 
